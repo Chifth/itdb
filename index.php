@@ -2,7 +2,7 @@
 //ITDB:IT-items database
 //sivann at gmail.com 2008-2014
 
-$version=file_get_contents("VERSION");
+$version="1.23";
 $fordbversion=6;
 
 /*********************************************************************** 
@@ -11,8 +11,8 @@ $fordbversion=6;
 
 $itdb_start=getmicrotime();
 function getmicrotime() {
-    $a = explode (' ',microtime());
-    return(double) $a[0] + $a[1];
+	$a = explode (' ',microtime());
+	return(double) $a[0] + $a[1];
 } 
 
 $initok=1;
@@ -31,8 +31,8 @@ else {
 }
 
 if ((isset($_GET['export']) && ($_GET['export']==1))) {
-  $action = "listitems2"; 
-  require ("php/listitems2.php");
+  $action = "listitems"; 
+  require ("php/listitems.php.bak");
   exit;
 }
 
@@ -49,158 +49,235 @@ else  {
 
 switch ($_GET['action']) {
   case "listitems2": 
-    $title="Find Item2";
-    break;
+	$title="Find Item2";
+	break;
   case "listitems": 
-    $title="Find Item";
-    $head.="<link rel='stylesheet' type='text/css' href='css/jquery.tag.list.css' />\n";
-    break;
+	$title="Find Item";
+	$head.="<link rel='stylesheet' type='text/css' href='css/jquery.tag.list.css' />\n";
+	break;
+	case "listjacks": 
+	$title="Find Jack";
+	$head.="<link rel='stylesheet' type='text/css' href='css/jquery.tag.list.css' />\n";
+	break;
+	case "listvouchers": 
+	$title="Find Vouchers";
+	$head.="<link rel='stylesheet' type='text/css' href='css/jquery.tag.list.css' />\n";
+	break;
+  case "listprojects": 
+	$title="Find Project";
+	$head.="<link rel='stylesheet' type='text/css' href='css/jquery.tag.list.css' />\n";
+	break;
+  case "listvlans": 
+	$title="Find VLAN";
+	$head.="<link rel='stylesheet' type='text/css' href='css/jquery.tag.list.css' />\n";
+	break;
+  case "listdepartments": 
+	$title="Find Departments";
+	$head.="<link rel='stylesheet' type='text/css' href='css/jquery.tag.list.css' />\n";
+	break;
   case "listagents": 
-    $title="List Agents";
-    break;
+	$title="List Agents";
+	break;
+  case "listfiber": 
+	$title="List Fiber";
+	break;
   case "editagent": 
-    $title="Edit Agent";
-    break;
+	$title="Edit Agent";
+	break;
   case "edititem": 
-    $title="Edit Item";
-    $stitle="Item";
-    $head.="<script language='javascript' type='text/javascript' src='js/jquery.tag.js'></script>\n".
+	$title="Edit Item";
+	$stitle="Item";
+	$head.="<script language='javascript' type='text/javascript' src='js/jquery.tag.js'></script>\n".
 	   "<link rel='stylesheet' type='text/css' href='css/jquery.tag.css' />\n".
 	   "<script language='javascript' type='text/javascript' src='js/jquery.metadata.js'></script>\n".
 	   "<script language='javascript' type='text/javascript' src='js/jquery.validate.js'></script>\n".
 	   "<script language='javascript' type='text/javascript' src='js/jquery.validate.front.js'></script>\n";
-    break;
+	break;
+	case "editjack": 
+	$title="Edit Jack";
+	$stitle="Jack";
+	$head.="<script language='javascript' type='text/javascript' src='js/jquery.tag.js'></script>\n".
+	   "<link rel='stylesheet' type='text/css' href='css/jquery.tag.css' />\n".
+	   "<script language='javascript' type='text/javascript' src='js/jquery.metadata.js'></script>\n".
+	   "<script language='javascript' type='text/javascript' src='js/jquery.validate.js'></script>\n".
+	   "<script language='javascript' type='text/javascript' src='js/jquery.validate.front.js'></script>\n";
+	break;
+	case "editvoucher": 
+	$title="Edit Voucher";
+	$stitle="Voucher";
+	$head.="<script language='javascript' type='text/javascript' src='js/jquery.tag.js'></script>\n".
+	   "<link rel='stylesheet' type='text/css' href='css/jquery.tag.css' />\n".
+	   "<script language='javascript' type='text/javascript' src='js/jquery.metadata.js'></script>\n".
+	   "<script language='javascript' type='text/javascript' src='js/jquery.validate.js'></script>\n".
+	   "<script language='javascript' type='text/javascript' src='js/jquery.validate.front.js'></script>\n";
+	break;
+  case "editproject": 
+	$title="Edit Project";
+	$stitle="Project";
+	$head.="<script language='javascript' type='text/javascript' src='js/jquery.tag.js'></script>\n".
+	   "<link rel='stylesheet' type='text/css' href='css/jquery.tag.css' />\n".
+	   "<script language='javascript' type='text/javascript' src='js/jquery.metadata.js'></script>\n".
+	   "<script language='javascript' type='text/javascript' src='js/jquery.validate.js'></script>\n".
+	   "<script language='javascript' type='text/javascript' src='js/jquery.validate.front.js'></script>\n";
+	break;
+  case "editvlan": 
+	$title="Edit VLAN";
+	$stitle="VLAN";
+	$head.="<script language='javascript' type='text/javascript' src='js/jquery.tag.js'></script>\n".
+	   "<link rel='stylesheet' type='text/css' href='css/jquery.tag.css' />\n".
+	   "<script language='javascript' type='text/javascript' src='js/jquery.metadata.js'></script>\n".
+	   "<script language='javascript' type='text/javascript' src='js/jquery.validate.js'></script>\n".
+	   "<script language='javascript' type='text/javascript' src='js/jquery.validate.front.js'></script>\n";
+	break;
+  case "editfiber": 
+	$title="Edit Fiber";
+	$stitle="Fiber";
+	$head.="<script language='javascript' type='text/javascript' src='js/jquery.tag.js'></script>\n".
+	   "<link rel='stylesheet' type='text/css' href='css/jquery.tag.css' />\n".
+	   "<script language='javascript' type='text/javascript' src='js/jquery.metadata.js'></script>\n".
+	   "<script language='javascript' type='text/javascript' src='js/jquery.validate.js'></script>\n".
+	   "<script language='javascript' type='text/javascript' src='js/jquery.validate.front.js'></script>\n";
+	break;
+	case "editdepartment": 
+	$title="Edit Department";
+	$stitle="Department";
+	$head.="<script language='javascript' type='text/javascript' src='js/jquery.tag.js'></script>\n".
+	   "<link rel='stylesheet' type='text/css' href='css/jquery.tag.css' />\n".
+	   "<script language='javascript' type='text/javascript' src='js/jquery.metadata.js'></script>\n".
+	   "<script language='javascript' type='text/javascript' src='js/jquery.validate.js'></script>\n".
+	   "<script language='javascript' type='text/javascript' src='js/jquery.validate.front.js'></script>\n";
+	break;
   case "editsoftware": 
-    $title="Edit Software";
-    $stitle="Software";
-    $head.="<script language='javascript' type='text/javascript' src='js/jquery.tag.js'></script>\n".
+	$title="Edit Software";
+	$stitle="Software";
+	$head.="<script language='javascript' type='text/javascript' src='js/jquery.tag.js'></script>\n".
 	   "<link rel='stylesheet' type='text/css' href='css/jquery.tag.css' />\n".
 	   "<script language='javascript' type='text/javascript' src='js/jquery.metadata.js'></script>\n".
 	   "<script language='javascript' type='text/javascript' src='js/jquery.validate.js'></script>\n".
 	   "<script language='javascript' type='text/javascript' src='js/jquery.validate.front.js'></script>\n";
-    break;
+	break;
   case "listsoftware": 
-    $title="List Software";
-    $head.="<link rel='stylesheet' type='text/css' href='css/jquery.tag.list.css' />\n";
-    break;
+	$title="List Software";
+	$head.="<link rel='stylesheet' type='text/css' href='css/jquery.tag.list.css' />\n";
+	break;
   case "listcontracts": 
-    $title="List Contracts";
-    break;
+	$title="List Contracts";
+	break;
   case "listinvoices": 
-    $title="List Invoices";
-    break;
+	$title="List Invoices";
+	break;
   case "editinvoice": 
-    $title="Edit Invoice";
-    $stitle="Invoice";
-    $head.="<script language='javascript' type='text/javascript' src='js/jquery.metadata.js'></script>\n".
+	$title="Edit Invoice";
+	$stitle="Invoice";
+	$head.="<script language='javascript' type='text/javascript' src='js/jquery.metadata.js'></script>\n".
 	   "<script language='javascript' type='text/javascript' src='js/jquery.validate.js'></script>\n".
 	   "<script language='javascript' type='text/javascript' src='js/jquery.validate.front.js'></script>\n";
-    break;
+	break;
   case "listfiles": 
-    $title="List Files";
-    break;
+	$title="List Files";
+	break;
   case "editfile": 
-    $title="Edit File";
-    $stitle="File";
-    $head.="<script language='javascript' type='text/javascript' src='js/jquery.metadata.js'></script>\n".
+	$title="Edit File";
+	$stitle="File";
+	$head.="<script language='javascript' type='text/javascript' src='js/jquery.metadata.js'></script>\n".
 	   "<script language='javascript' type='text/javascript' src='js/jquery.validate.js'></script>\n".
 	   "<script language='javascript' type='text/javascript' src='js/jquery.validate.front.js'></script>\n";
-    break;
+	break;
   case "listusers": 
-    $title="List Users";
-    break;
+	$title="List Users";
+	break;
   case "listracks": 
-    $title="List Racks";
-    break;
+	$title="List Racks";
+	break;
   case "translations": 
-    $title="Translations";
-    break;
+	$title="Translations";
+	break;
   case "settings": 
-    $title="Settings";
-    break;
+	$title="Settings";
+	break;
 
   case "import": 
-    $title="Import";
-    break;
+	$title="Import";
+	break;
   case "edituser": 
-    $stitle="User";
-    $title="Edit User";
-    $head.="<script language='javascript' type='text/javascript' src='js/jquery.metadata.js'></script>\n".
+	$stitle="User";
+	$title="Edit User";
+	$head.="<script language='javascript' type='text/javascript' src='js/jquery.metadata.js'></script>\n".
 	   "<script language='javascript' type='text/javascript' src='js/jquery.validate.js'></script>\n".
 	   "<script language='javascript' type='text/javascript' src='js/jquery.validate.front.js'></script>\n";
-    break;
+	break;
 
   case "editrack": 
-    $stitle="Rack";
-    $title="Edit Rack";
-    $head.="<script language='javascript' type='text/javascript' src='js/jquery.metadata.js'></script>\n".
+	$stitle="Rack";
+	$title="Edit Rack";
+	$head.="<script language='javascript' type='text/javascript' src='js/jquery.metadata.js'></script>\n".
 	   "<script language='javascript' type='text/javascript' src='js/jquery.validate.js'></script>\n".
 	   "<script language='javascript' type='text/javascript' src='js/jquery.validate.front.js'></script>\n";
-    break;
+	break;
 
   case "edititypes": 
-    $title="Edit Item Types";
-    break;
+	$title="Edit Item Types";
+	break;
   case "editcontract": 
-    $title="Edit Contract";
-    $stitle="Contract";
-    $head.="<script language='javascript' type='text/javascript' src='js/jquery.metadata.js'></script>\n".
+	$title="Edit Contract";
+	$stitle="Contract";
+	$head.="<script language='javascript' type='text/javascript' src='js/jquery.metadata.js'></script>\n".
 	   "<script language='javascript' type='text/javascript' src='js/jquery.validate.js'></script>\n".
 	   "<script language='javascript' type='text/javascript' src='js/jquery.validate.front.js'></script>\n";
-    break;
+	break;
   case "editcontracttypes": 
-    $title="Edit Contract Types";
-    break;
+	$title="Edit Contract Types";
+	break;
   case "edittags": 
-    $title="Edit Tags";
-    break;
+	$title="Edit Tags";
+	break;
   case "editusers": 
-    $title="Edit Users";
-    break;
+	$title="Edit Users";
+	break;
   case "listlocations": 
-    $title="List Locations";
-    break;
+	$title="List Locations";
+	break;
   case "editlocation": 
-    $title="Edit Location";
-    break;
+	$title="Edit Location";
+	break;
   case "editstatustypes": 
-    $title="Edit Item Status Types";
-    break;
+	$title="Edit Item Status Types";
+	break;
   case "editfiletypes": 
-    $title="Edit File Types";
-    break;
+	$title="Edit File Types";
+	break;
   case "printlabels": 
-    $title="Print Labels ";
-    break;
+	$title="Print Labels ";
+	break;
   case "reports": 
-    $title="Reports";
-    $head.="<script language='javascript' type='text/javascript' src='js/jqplot/jquery.jqplot.js'></script>\n".
+	$title="Reports";
+	$head.="<script language='javascript' type='text/javascript' src='js/jqplot/jquery.jqplot.js'></script>\n".
 	   "<script type='text/javascript' src='js/jqplot/plugins/jqplot.pieRenderer.js'></script>\n".
 	   "<script type='text/javascript' src='js/jqplot/plugins/jqplot.barRenderer.js'></script>\n".
 	   "<!--[if lt IE 9]><script language='javascript' type='text/javascript' src='js/jqplot/excanvas.js'></script><![endif]-->\n".
 	   "<link rel='stylesheet' type='text/css' href='css/jquery.jqplot.css' />";
-    break;
+	break;
   case "showhist": 
-    $title="History";
-    break;
+	$title="History";
+	break;
   case "browse": 
-    $title="Browse Data";
-    $head.="<script type='text/javascript' src='js/jstree/jquery.jstree.js'></script>";
-    break;
+	$title="Browse Data";
+	$head.="<script type='text/javascript' src='js/jstree/jquery.jstree.js'></script>";
+	break;
   case "viewrack": 
-    $title="Rack";
-    $stitle="Rack";
-    break;
+	$title="Rack";
+	$stitle="Rack";
+	break;
   case "about":
-    $title="About";
-    $stitle="About";
-    $req="php/about.php";
-    break;
+	$title="About";
+	$stitle="About";
+	$req="php/about.php";
+	break;
   default: 
-    $title="";
-    $stitle="";
-    $req="php/home.php";
-    break;
+	$title="";
+	$stitle="";
+	$req="php/home.php";
+	break;
 }
 if (isset($_GET['id'])) 
   $id=$_GET['id']; 
@@ -210,7 +287,7 @@ else
 if (strlen($stitle)) $stitle.=":".$id;
 
 $x="style_".$_GET['action'];
-$$x="color:#BAFF04 ";
+$$x="color:#EAAF0F ";
 
 
 require('php/header.php');
@@ -257,74 +334,100 @@ if ($authstatus) {
 <tr><td colspan=2><hr class='light1'> </td></tr>
 
 <tr>
-<td><a style="<?php echo $style_listitems.$style_edititem; ?>" class='ahdr' title='<?php te("List Items");?>' href="<?php echo $scriptname?>?action=listitems" ><?php te("Items")?></a> </td>
-<td><a title='<?php te("Add new Item");?>' class='ahdr' href="<?php echo $scriptname?>?action=edititem&amp;id=new" ><img  alt="+" src='images/add.png'></a></td>
-</tr>
-
-<tr>
-<td><a style="<?php echo $style_listsoftware.$style_editsoftware; ?>" title='<?php te("List Software");?>' class='ahdr' href="<?php echo $scriptname?>?action=listsoftware" ><?php te("Software");?></a> </td>
-<td><a title='<?php te("Add new Software");?>' class='ahdr' href="<?php echo $scriptname?>?action=editsoftware&amp;id=new" ><img  alt="+" src='images/add.png'></a></td>
-</tr>
-
-<tr>
-<td><a style="<?php echo $style_listinvoices.$style_editinvoice; ?>" title='<?php te("List Invoices");?>' class='ahdr' href="<?php echo $scriptname?>?action=listinvoices" ><?php te("Invoices");?></a> </td>
-<td><a title='<?php te("Add new Invoice");?>' class='ahdr' href="<?php echo $scriptname?>?action=editinvoice&amp;id=new" ><img  alt="+" src='images/add.png'></a></td>
-</tr>
-
-
-<tr>
-<td><a style="<?php echo $style_listagents.$style_editagent; ?>" title='<?php te("Vendors/Buyers/ Manufacturers");?>' class='ahdr' href="<?php echo $scriptname?>?action=listagents" ><?php te("Agents");?></a> </td>
+<td><a style="<?php echo $style_listagents.$style_editagent; ?>" title='<?php te("Vendors/Buyers/Manufacturers");?>' class='ahdr' href="<?php echo $scriptname?>?action=listagents&amp;page=1" ><?php te("Agents");?></a> </td>
 <td><a title='<?php te("Add new Agent");?>' class='ahdr' href="<?php echo $scriptname?>?action=editagent&amp;id=new" ><img  alt="+" src='images/add.png'></a></td>
 </tr>
 
 <tr>
-<td><a style="<?php echo $style_listfiles.$style_editfile; ?>" title='<?php te("Documents, Manuals, Offers, Licenses, ...");?>' class='ahdr' href="<?php echo $scriptname?>?action=listfiles" ><?php te("Files");?></a> </td>
-<td><a title='<?php te("Add new File");?>' class='ahdr' href="<?php echo $scriptname?>?action=editfile&amp;id=new" ><img  alt="+" src='images/add.png'></a></td> 
-</tr>
-
-
-<tr>
-<td><a style="<?php echo $style_listcontracts.$style_editcontract; ?>" title='<?php te("Support and Maintanance, Leases, ...");?>' class='ahdr' href="<?php echo $scriptname?>?action=listcontracts" ><?php te("Contracts");?></a> </td>
+<td><a style="<?php echo $style_listcontracts.$style_editcontract; ?>" title='<?php te("Support and Maintanance, Leases, ...");?>' class='ahdr' href="<?php echo $scriptname?>?action=listcontracts&amp;page=1" ><?php te("Contracts");?></a> </td>
 <td><a title='<?php te("Add new Contract");?>' class='ahdr' href="<?php echo $scriptname?>?action=editcontract&amp;id=new" ><img  alt="+" src='images/add.png'></a></td>
 </tr>
 
 <tr>
-<td><a style="<?php echo $style_listlocations; ?>" class='ahdr' href="<?php echo $scriptname?>?action=listlocations" ><?php te("Locations");?></a></td>
+	<td><a style="<?php echo $style_listdepartments; ?>" class='ahdr' href="<?php echo $scriptname?>?action=listdepartments&amp;page=1" ><?php te("Departments");?></a></td>
+	<td><a style="<?php echo $style_editdepartments; ?>" class='ahdr' href="<?php echo $scriptname?>?action=editdepartment&amp;id=new" ><img  alt="+" src='images/add.png'></a></td>
+</tr>
+
+<tr>
+<td><a style="<?php echo $style_listfiber.$style_editfile; ?>" title='<?php te("Fiber Optic Records");?>' class='ahdr' href="<?php echo $scriptname?>?action=listfiber&amp;page=1" ><?php te("Fiber");?></a> </td>
+<td><a title='<?php te("Add new Fiber");?>' class='ahdr' href="<?php echo $scriptname?>?action=editfiber&amp;id=new" ><img  alt="+" src='images/add.png'></a></td> 
+</tr>
+
+<tr>
+<td><a style="<?php echo $style_listfiles.$style_editfile; ?>" title='<?php te("Documents, Manuals, Offers, Licenses, ...");?>' class='ahdr' href="<?php echo $scriptname?>?action=listfiles&amp;page=1" ><?php te("Files");?></a> </td>
+<td><a title='<?php te("Add new File");?>' class='ahdr' href="<?php echo $scriptname?>?action=editfile&amp;id=new" ><img  alt="+" src='images/add.png'></a></td> 
+</tr>
+
+<tr>
+<td><a style="<?php echo $style_listvouchers.$style_editvouchers; ?>" title='<?php te("Guest WiFi Voucher Informaiton");?>' class='ahdr' href="<?php echo $scriptname?>?action=listvouchers&amp;page=1" ><?php te("Guest Vouchers");?></a> </td>
+<td><a title='<?php te("Add new Voucher");?>' class='ahdr' href="<?php echo $scriptname?>?action=editvoucher&amp;id=new" ><img  alt="+" src='images/add.png'></a></td> 
+</tr>
+
+<tr>
+<td><a style="<?php echo $style_listinvoices.$style_editinvoice; ?>" title='<?php te("List Invoices");?>' class='ahdr' href="<?php echo $scriptname?>?action=listinvoices&amp;page=1" ><?php te("Invoices");?></a> </td>
+<td><a title='<?php te("Add new Invoice");?>' class='ahdr' href="<?php echo $scriptname?>?action=editinvoice&amp;id=new" ><img  alt="+" src='images/add.png'></a></td>
+</tr>
+
+<tr>
+<td><a style="<?php echo $style_listitems.$style_edititem; ?>" class='ahdr' title='<?php te("List Items");?>' href="<?php echo $scriptname?>?action=listitems&amp;page=1" ><?php te("Items")?></a> </td>
+<td><a title='<?php te("Add new Item");?>' class='ahdr' href="<?php echo $scriptname?>?action=edititem&amp;id=new" ><img  alt="+" src='images/add.png'></a></td>
+</tr>
+
+<tr>
+	<td><a style="<?php echo $style_listjacks; ?>" class='ahdr' href="<?php echo $scriptname?>?action=listjacks&amp;page=1" ><?php te("Jacks");?></a></td>
+	<td><a style="<?php echo $style_editjacks; ?>" class='ahdr' href="<?php echo $scriptname?>?action=editjack&amp;id=new" ><img  alt="+" src='images/add.png'></a></td>
+</tr>
+
+<tr>
+<td><a style="<?php echo $style_listlocations; ?>" class='ahdr' href="<?php echo $scriptname?>?action=listlocations&amp;page=1" ><?php te("Locations");?></a></td>
 <td><a style="<?php echo $style_editlocation; ?>" class='ahdr' href="<?php echo $scriptname?>?action=editlocation&amp;id=new" ><img  alt="+" src='images/add.png'></a></td>
 </tr>
 
 <tr>
-<td><a style="<?php echo $style_listusers; ?>" class='ahdr' href="<?php echo $scriptname?>?action=listusers" ><?php te("Users");?></a></td>
+	<td><a style="<?php echo $style_listprojects; ?>" class='ahdr' href="<?php echo $scriptname?>?action=listprojects&amp;page=1" ><?php te("Projects");?></a></td>
+	<td><a style="<?php echo $style_editprojects; ?>" class='ahdr' href="<?php echo $scriptname?>?action=editproject&amp;id=new" ><img  alt="+" src='images/add.png'></a></td>
+</tr>
+
+<tr>
+<td><a style="<?php echo $style_listracks; ?>" class='ahdr' href="<?php echo $scriptname?>?action=listracks&amp;page=1" ><?php te("Racks");?></a></td>
+<td><a style="<?php echo $style_editrack; ?>" class='ahdr' href="<?php echo $scriptname?>?action=editrack&amp;id=new" ><img  alt="+" src='images/add.png'></a></td>
+</tr>
+
+<tr>
+<td><a style="<?php echo $style_listsoftware.$style_editsoftware; ?>" title='<?php te("List Software");?>' class='ahdr' href="<?php echo $scriptname?>?action=listsoftware&amp;page=1" ><?php te("Software");?></a> </td>
+<td><a title='<?php te("Add new Software");?>' class='ahdr' href="<?php echo $scriptname?>?action=editsoftware&amp;id=new" ><img  alt="+" src='images/add.png'></a></td>
+</tr>
+
+<tr>
+<td><a style="<?php echo $style_listusers; ?>" class='ahdr' href="<?php echo $scriptname?>?action=listusers&amp;page=1" ><?php te("Users");?></a></td>
 <td><a style="<?php echo $style_edituser; ?>" class='ahdr' href="<?php echo $scriptname?>?action=edituser&amp;id=new" ><img  alt="+" src='images/add.png'></a></td>
 </tr>
 
-
 <tr>
-<td><a style="<?php echo $style_listracks; ?>" class='ahdr' href="<?php echo $scriptname?>?action=listracks" ><?php te("Racks");?></a></td>
-<td><a style="<?php echo $style_editrack; ?>" class='ahdr' href="<?php echo $scriptname?>?action=editrack&amp;id=new" ><img  alt="+" src='images/add.png'></a></td>
+	<td><a style="<?php echo $style_listvlans; ?>" class='ahdr' href="<?php echo $scriptname?>?action=listvlans&amp;page=1" ><?php te("VLANS");?></a></td>
+	<td><a style="<?php echo $style_editvlans; ?>" class='ahdr' href="<?php echo $scriptname?>?action=editvlan&amp;id=new" ><img  alt="+" src='images/add.png'></a></td>
 </tr>
 
 <tr><td colspan=2><hr class='light1'> </td></tr>
 
-<tr><td colspan=2><a style="<?php echo $style_edititypes; ?>" class='ahdr' href="<?php echo $scriptname?>?action=edititypes" ><?php te("Item Types");?></a></td></tr>
 <tr><td colspan=2><a style="<?php echo $style_editcontracttypes; ?>" class='ahdr' href="<?php echo $scriptname?>?action=editcontracttypes" ><?php te("Contr. Types")?></a></td></tr>
-<tr><td colspan=2><a style="<?php echo $style_editstatustypes; ?>" class='ahdr' href="<?php echo $scriptname?>?action=editstatustypes" ><?php te("Status Types");?></a></td></tr>
 <tr><td colspan=2><a style="<?php echo $style_editfiletypes; ?>" class='ahdr' href="<?php echo $scriptname?>?action=editfiletypes" ><?php te("File Types");?></a></td></tr>
+<tr><td colspan=2><a style="<?php echo $style_edititypes; ?>" class='ahdr' href="<?php echo $scriptname?>?action=edititypes" ><?php te("Item Types");?></a></td></tr>
+<tr><td colspan=2><a style="<?php echo $style_editstatustypes; ?>" class='ahdr' href="<?php echo $scriptname?>?action=editstatustypes" ><?php te("Status Types");?></a></td></tr>
 
 <tr><td colspan=2><a style="<?php echo $style_edittags; ?>" class='ahdr' href="<?php echo $scriptname?>?action=edittags" ><?php te("Tags")?></a></td></tr>
 
 <tr><td colspan=2><hr class='light1'> </td></tr>
 
+<tr><td colspan=2><a style="<?php echo $style_browse; ?>" class='ahdr' href="<?php echo $scriptname?>?action=browse" ><?php te("Browse Data")?></a></td></tr>
 <tr><td colspan=2><a style="<?php echo $style_printlabels; ?>" class='ahdr' href="<?php echo $scriptname?>?action=printlabels" ><?php te("Print Labels")?></a></td></tr>
 <tr><td colspan=2><a style="<?php echo $style_reports; ?>" class='ahdr' href="<?php echo $scriptname?>?action=reports" ><?php te("Reports")?></a></td></tr>
-<tr><td colspan=2><a style="<?php echo $style_browse; ?>" class='ahdr' href="<?php echo $scriptname?>?action=browse" ><?php te("Browse Data")?></a></td></tr>
 <tr><td colspan=2><hr class='light1'></td></tr>
 
-<tr><td colspan=2><a style="<?php echo $style_settings; ?>" class='ahdr' href="<?php echo $scriptname?>?action=settings" ><?php te("Settings");?></a></td></tr>
-
-<tr><td colspan=2><a style="<?php echo $style_import; ?>" class='ahdr' href="<?php echo $scriptname?>?action=import" ><?php te("Import");?></a></td></tr>
-<tr><td colspan=2><a style="<?php echo $style_translations; ?>" class='ahdr' href="<?php echo $scriptname?>?action=translations" ><?php te("Translations");?></a></td></tr>
 <tr><td colspan=2><a style="<?php echo $style_showhist; ?>" class='ahdr' href="<?php echo $scriptname?>?action=showhist" >DB Log</a></td></tr>
+<tr><td colspan=2><a style="<?php echo $style_import; ?>" class='ahdr' href="<?php echo $scriptname?>?action=import" ><?php te("Import");?></a></td></tr>
+<tr><td colspan=2><a style="<?php echo $style_settings; ?>" class='ahdr' href="<?php echo $scriptname?>?action=settings" ><?php te("Settings");?></a></td></tr>
+<tr><td colspan=2><a style="<?php echo $style_translations; ?>" class='ahdr' href="<?php echo $scriptname?>?action=translations" ><?php te("Translations");?></a></td></tr>
 </table>
 <?php 
 
@@ -344,28 +447,28 @@ else {
 
 if ($authstatus) {
   echo "\n<div style='height:5px'></div>".
-       "<form method=post><button type='submit'><img width=20 src='images/logout_red.png'> ".t("Logout")."</button>".
-       "\n<input type=hidden name=logout value='1'></form>";
+	   "<form method=post><button type='submit'><img width=20 src='images/logout_red.png'> ".t("Logout")."</button>".
+	   "\n<input type=hidden name=logout value='1'></form>";
 
 
   if (strlen($stitle)) {
-    $url="$fscriptname?action=$action&id=$id";
+	$url="$fscriptname?action=$action&id=$id";
 
-    $sql="SELECT * FROM viewhist order by id DESC limit 1";
-    $sth=db_execute($dbh,$sql);
-    $viewhist=$sth->fetchAll(PDO::FETCH_ASSOC);
-    if (!$demomode) {
-      if ($viewhist[0]['url']!=$url) {
+	$sql="SELECT * FROM viewhist order by id DESC limit 1";
+	$sth=db_execute($dbh,$sql);
+	$viewhist=$sth->fetchAll(PDO::FETCH_ASSOC);
+	if (!$demomode) {
+	  if ($viewhist[0]['url']!=$url) {
 	$sql="INSERT into viewhist (url,description)".
-	     " VALUEs ('$url','$stitle')";
+		 " VALUEs ('$url','$stitle')";
 	db_exec($dbh,$sql,1,1,$lastid);
 
 	$lastkeep=(int)($lastid)-40;
 	$sql="DELETE from viewhist where id<$lastkeep";
 	db_exec($dbh,$sql,1,1);
 	$sth=$dbh->exec($sql);
-      }
-    }
+	  }
+	}
   }
 
   $sql="SELECT * FROM viewhist order by id DESC";
@@ -373,38 +476,38 @@ if ($authstatus) {
   $viewhist=$sth->fetchAll(PDO::FETCH_ASSOC);
 
   ?>
-  <div title='<?php te("Recent History");?>' style='font-size:7pt;height:75px;width:100%;overflow:auto;margin-top:5px ;margin-bottom:5px;text-align:left;color:white;border-bottom:1px solid #8FAFE4;'>
+<?php /*?>  <div title='<?php te("Recent History");?>' style='font-size:7pt;height:75px;width:100%;overflow:auto;margin-top:5px ;margin-bottom:5px;text-align:left;color:white;border-bottom:1px solid #8FAFE4;'>
   <?php 
   for ($i=0;$i<count($viewhist);$i++){
-    if (!($i%2)) $bgc="";else$bgc="background-color:#295BAD";
-    echo "<div style='border-bottom:1px solid #8FAFE4;width:100%;clear:both;$bgc'><a style='color:white' href='".$viewhist[$i]['url']."'>".$viewhist[$i]['description']."</a></div>\n";
+	if (!($i%2)) $bgc="";else$bgc="background-color:#295BAD";
+	echo "<div style='border-bottom:1px solid #8FAFE4;width:100%;clear:both;$bgc'><a style='color:white' href='".$viewhist[$i]['url']."'>".$viewhist[$i]['description']."</a></div>\n";
   }
 
   ?>
   </div>
-
+<?php */?>
 <?php 
 }
 
 if (strstr($authmsg,"elcome") || strstr($authmsg,"thenticated")) 
-  echo "<div class=info>$authmsg</div><br>";
+  echo "<div class=info>$authmsg</div>";
 elseif (!strstr($authmsg,"elcome")) 
-  echo "<br><div class=warning>$authmsg</div>";
+  echo "<div class=warning>$authmsg</div>";
 
 
 if ($authstatus) {
 ?>
-  <a title='<?php te("Download DataBase file. Contains all data except uploaded files/documents");?>' class='ahdr' href='getdb.php'><img src='images/database_save.png'>DB (SQLite)</a><br>
-  <a title='<?php te("Download a complete installation backup (much larger)");?>' class='ahdr' href='gettar.php'><img src='images/backup.gif' width=20>Full Backup</a><br>
+  <a title='<?php te("Download DataBase file. Contains all data except uploaded files/documents");?>' class='ahdr' href='getdb.php'><img src='images/database_save.png'>DB (SQLite)</a><br />
+  <a title='<?php te("Download a complete installation backup (much larger)");?>' class='ahdr' href='gettar.php'><img src='images/backup.gif' width=20>Full Backup</a><br />
 <?php 
 }
 
 echo "<br> <small>".
-     "<a href='CHANGELOG.txt' class='ahdr'>Version $version</a><br><a style='color:white' href='http://www.sivann.gr/software/itdb/'>sivann</a></small>\n";
+	 "<a href='CHANGELOG.txt' class='ahdr'>Version $version</a><br><a style='color:white' href='http://www.sivann.gr/software/itdb/'>sivann</a></small>\n";
 ?>
-<br>
-<a title='phpinfo' href='phpinfo.php'><img src='images/infosmall.png'></a>
-</div>
+<!--<br>
+<a title='phpinfo' href='phpinfo.bak'><img src='images/infosmall.png'></a>
+--></div>
 <!-- END OF #leftcolumn -->
 
 
@@ -421,10 +524,9 @@ else {
 $itdb_end=getmicrotime();
 
 echo "</div>";// <!-- end of #mainpage -->
-
+			 
 echo "<span style='color:#aaa'>server time = ".number_format(($itdb_end - $itdb_start),3)." secs</span>"; 
 
 ?>
 </body>
 </html>
-

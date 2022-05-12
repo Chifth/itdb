@@ -50,11 +50,11 @@ function ymd2sec($d)
 
 //remove invalid filename characters
 function validfn($s) {
-  $f =preg_split('//u', 'ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΣΤΥΦΧΨΩΪΫΌΎΏΆΈΰαβγδεζηθικλμνξοπρςστυφχψωίϊΐϋόύώάέΰ');
-  $t =preg_split('//u', 'ABGDEZHUIKLMNJOPRSSTYFXCVIUOUVAEUabgdezhuiklmnjoprsstyfxcviiiuouvaeu');
+  $f =preg_split('//u', 'ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΣΤΥΦΧΨΩΪΫΌΎΏΆΈΰαβγδεζηθικλμνξοπρςστυφχψωίϊΐϋόύώάέΰ ');
+  $t =preg_split('//u', 'ABGDEZHUIKLMNJOPRSSTYFXCVIUOUVAEUabgdezhuiklmnjoprsstyfxcviiiuouvaeu_');
   $s=str_replace($f,$t,$s);
   $reserved = preg_quote('\/:*?"<>|', '/');
-  $s=preg_replace("/([-\\x00-\\x20\\x7f-\\xff{$reserved}])/e", "", $s); 
+  $s=preg_replace_callback("/([-\\x00-\\x20\\x7f-\\xff{$reserved}])", "", $s); 
   $s=strtolower($s);
   return $s;
 }
@@ -231,8 +231,8 @@ function connect_to_ldap_server($ldap_server,$username,$passwd,$ldap_dn) {
     $ds=ldap_connect($ldap_server);  // must be a valid LDAP server!
     //echo "connect result is " . $ds . "<br />\n";
     if($ds){
-        $dn="uid=".$username.",".$ldap_dn;
-        echo $dn;
+        $dn=$username."@".$ldap_server;
+        //echo $dn;
         ldap_set_option($ds, LDAP_OPT_PROTOCOL_VERSION, 3);
         $r=ldap_bind($ds,$dn, $passwd);
         if(!$r){

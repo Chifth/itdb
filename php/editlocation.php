@@ -274,7 +274,7 @@ else
 <td>
 <?php 
 if (strlen($r['floorplanfn'])) {?>
-<img width=600 src='<?php  echo $fuploaddirwww.$r['floorplanfn']; ?>'>
+<img width=600 src='<?php  echo $fuploaddirwww."/floorplan/".$r['floorplanfn']; ?>'>
 <?php  }?>
 
 </td>

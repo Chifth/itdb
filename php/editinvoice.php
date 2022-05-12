@@ -137,8 +137,52 @@ if (isset($_POST['id'])) { //if we came from a post (save) then update invoice
 
 }//save pressed
 
-/////////////////////////////
-//// display data now
+if ($id!="new") {
+  //get current item data
+  $id=$_GET['id'];
+  $sql="SELECT * FROM invoices WHERE id='$id'";
+  $sth=db_execute($dbh,$sql);
+  $dept=$sth->fetchAll(PDO::FETCH_ASSOC);
+  
+	//  Next & Previous Buttons' Function
+	$curid = intval($dept[0]);
+
+    // Select contents from the selected id
+    $sql = "SELECT * FROM invoices WHERE id='$curid'";
+    $result = db_execute($dbh,$sql);
+    if ($result>0) {
+        $info = $result->fetchAll(PDO::FETCH_ASSOC);
+    } else {
+        die('Not found');
+    }
+
+    // Next Record
+    $sql = "SELECT id FROM invoices WHERE id>'$id' LIMIT 1";
+    $result = db_execute($dbh,$sql);
+    if ($result>0) {
+        $nextresults = $result->fetchAll(PDO::FETCH_ASSOC);
+		$nextid = strval($nextresults[0]['id']);
+    }
+
+    // Previous Record
+    $sql = "SELECT id FROM invoices WHERE id<'$id' ORDER BY id DESC LIMIT 1";
+    $result = db_execute($dbh,$sql);
+    if ($result>0) {
+        $prevresults = $result->fetchAll(PDO::FETCH_ASSOC);
+		$previd = strval($prevresults[0]['id']);
+    }
+} else {
+    // No form has been submitted so use the lowest id and grab its info
+    $sql = "SELECT * FROM invoices WHERE id > 0 LIMIT 1";
+    $result = db_execute($dbh,$sql);
+    if ($result>0) {
+        $inforesults = $result->fetchAll(PDO::FETCH_ASSOC);
+		$info =  strval($inforesults[0]['id']);
+		
+    }
+}
+
+///////////////////////////////// display data now
 
 
 $sql="SELECT id,title,type FROM agents order by title";
@@ -209,7 +253,7 @@ else
          "<a title='Remove association. If file is orphaned (nothing links to it), it gets deleted.' ".
          " href='javascript:delconfirm2(\"[$fid] $fname\", \"$scriptname?action=$action&amp;id=$id&amp;delfid=$fid\");'>".
          "<img src='images/delete.png'></a> ".
-         "<a target=_blank title='Edit File' href='$scriptname?action=editfile&amp;id=$fid'><img  src='images/edit.png'></a>".
+         "<a target=_blank title='Edit File' href='$scriptname?action=editfile&amp;id=$fid'><img  src='images/edit2.png'></a>".
          " <a target=_blank title='Download $fname' href='".$uploaddirwww.$fname."'><img src='images/down.png'></a>".
          "<br>".t("Type").":<b>$ftypestr</b>".
          "<br>".t("Date").":<b>$fdate</b>".
@@ -227,7 +271,7 @@ else
       <tr><td class="tdt"><?php te("ID");?>:</td> <td><input  class='input2' type=text name='id' value='<?php echo $id?>' readonly size=3></td></tr>
       <tr><td class="tdt">
   <?php   if (is_numeric($vendorid))
-    echo "<a title='edit vendor (agent)' href='$scriptname?action=editagent&amp;id=$vendorid'><img src='images/edit.png'></a> "; ?>
+    echo "<a title='edit vendor (agent)' href='$scriptname?action=editagent&amp;id=$vendorid'><img src='images/edit2.png'></a> "; ?>
       <?php te("Vendor");?>*:</td> <td>
 	   <select class='mandatory' validate='required:true' name='vendorid'>
 	   <option value=''><?php te("Select");?></option>
@@ -245,7 +289,7 @@ else
       </td></tr>
       <tr><td class="tdt">
   <?php   if (is_numeric($buyerid))
-    echo "<a title='edit buyer (agent)' href='$scriptname?action=editagent&amp;id=$buyerid'><img src='images/edit.png'></a> "; ?>
+    echo "<a title='edit buyer (agent)' href='$scriptname?action=editagent&amp;id=$buyerid'><img src='images/edit2.png'></a> "; ?>
       <?php te("Buyer");?>*:</td> <td>
 	   <select class='mandatory' validate='required:true' name='buyerid'>
 	   <option value=''><?php te("Select");?></option>
@@ -406,9 +450,7 @@ else
     if ($ir['islinked']) echo " checked ";
     echo  " type='checkbox'></td>".
      "<td nowrap $cls><span $attr>&nbsp;</span><a title='Edit item {$ir['id']} in a new window' ".
-     "target=_blank href='$scriptname?action=edititem&amp;id=".$ir['id']."'><div class='editid'>";
-    echo $ir['id'];
-    echo "</div></a></td>".
+     "target=_blank href='$scriptname?action=edititem&amp;id=".$ir['id']."'><div class='editiditm icon edit'><span>".$r['id']."</span></a></td>".
      "<td $cls>".$ir['typedesc']."</td>".
      "<td $cls>".$agents[$ir['manufacturerid']]['title']. "&nbsp;</td>".
      "<td $cls>".$ir['model'].  "&nbsp;</td>".
@@ -545,12 +587,38 @@ else
 
 </div><!-- tab container -->
 
-<table>
-  <tr><td><button type="submit"><img src="images/save.png" alt="Save" > <?php te("Save Invoice");?></button></td>
-  <?php 
-  echo "\n<td><button type='button' onclick='javascript:delconfirm2(\"{$r['id']}\",\"$scriptname?action=$action&amp;delid={$r['id']}\");'>".
-       "<img title='delete' src='images/delete.png' border=0> Delete Invoice</button></td>\n</tr>\n";
-  echo "\n</table>\n";
+<table width="100%"><!-- save buttons -->
+<tr>
+<td>
+<?php if ($previd != "") { ?>
+	<a href='?action=editinvoice&amp;id=<?php echo $previd?>'><button type="button"><img title='Previous Record' src='images/prev_rec.png' border=0><?php echo t("&nbsp; Previous Record")?></button></a>
+<?php } else {?>
+	<a href='#'><button type="button"><img title='Previous Record' src='images/prev_rec.png' border=0><?php echo t("&nbsp; Previous Record")?></button></a>
+<?php }?>
+</td>
+<td style='text-align: center' colspan=1><button type="submit"><img src="images/save.png" alt="Save" > <?php te("Save");?></button></td>
+<?php 
+if ($id!="new") {
+  echo "\n<td style='text-align: center' ><button type='button' onclick='javascript:delconfirm2(\"Item {$_GET['id']}\",\"$scriptname?action=$action&amp;delid={$_GET['id']}\");'>".
+       "<img title='Delete' src='images/delete.png' border=0>".t("Delete")."</button></td>\n";
+
+  echo "\n<td style='text-align: center' ><button type='button' onclick='javascript:cloneconfirm(\"Item {$_GET['id']}\",\"$scriptname?action=$action&amp;cloneid={$_GET['id']}\");'>".
+       "<img  src='images/copy.png' border=0>". t("Clone")."</button></td>\n";
+} 
+else 
+  echo "\n<td>&nbsp;</td>";
+?>
+<td style="text-align:right;">
+<?php if ($nextid != "") { ?>
+<a href='?action=editinvoice&amp;id=<?php echo $nextid?>'><button type="button"><?php echo t("Next Record &nbsp;")?><img title='Next Record' src='images/next_rec.png' border=0></button></a>
+<?php } else {?>
+	<a href='#'><button type="button"><?php echo t("Next Record &nbsp;")?><img title='Next Record' src='images/next_rec.png' border=0></button></a>
+<?php }?>
+</td>
+</tr>
+</table>
+
+<?php
   echo "\n<input type=hidden name='action' value='$action'>";
   echo "\n<input type=hidden name='id' value='$id'>";
   ?>

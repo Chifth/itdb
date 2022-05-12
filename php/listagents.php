@@ -1,7 +1,5 @@
 <SCRIPT LANGUAGE="JavaScript"> 
 $(function () {
- //$('input#agentlistfilter').quicksearch('table#agentlisttbl tbody tr');
-
   $('table#agentlisttbl').dataTable({
                 "sPaginationType": "full_numbers",
                 "bJQueryUI": true,
@@ -37,7 +35,7 @@ $sth=db_execute($dbh,$sql);
 
 <thead>
 <tr>
-  <th style='width:70px'><?php te("Edit ID");?></th>
+  <th style='width:70px'><?php te("Edit/Delete");?></th>
   <th><?php te("Type");?></th>
   <th style='width:160px'><?php te("Title");?></th>
   <th style='width:150px'><?php te("Contact");?></th>
@@ -64,7 +62,7 @@ while ($r=$sth->fetch(PDO::FETCH_ASSOC)) {
   if ((count($allcontacts)==1) && (trim($allcontacts[0]=="####"))) $allcontacts=array();
 
   echo "\n<tr id='trid{$r['id']}'>";
-  echo "<td><a class='editid' href='$scriptname?action=editagent&amp;id=".$r['id']."'>{$r['id']}</a></td>\n";
+  echo "<td><div class='editiditm icon edit'><center><a href='$scriptname?action=editagent&amp;id=".$r['id']."'><img src='../images/edit2.png'></a><a href='../php/delagent.php?id=".$r['id']."'><img src='../images/delete.png' border=0></a></center></div></td>";
   echo "<td style='padding-left:2px;padding-right:2px;'>$type</td>\n";
   echo "<td style='padding-left:2px;padding-right:2px;'>{$r['title']}</td>\n";
   echo "<td style='padding-left:2px;padding-right:2px;'>{$r['contactinfo']}</td>\n";

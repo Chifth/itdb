@@ -67,8 +67,14 @@ $sth=db_execute($dbh,$sql);
 <div class='scrtblcontainerlist'>
 <table class="display" width='100%' border=0 id="invlisttbl">
 <thead>
-<tr><th style='width:80px' nowrap><?php te("Edit ID");?></th><th><?php te("Vendor");?></th><th><?php te("Buyer");?></th><th><?php te("Date");?></th>
-     <th><?php te("Order No");?></th><th><?php te("Description");?></th><th><?php te("Associated Files");?></th></tr>
+<tr>
+	<th style='width:80px' nowrap><?php te("Edit/Delete");?></th>
+    <th><?php te("Vendor");?></th><th><?php te("Buyer");?></th>
+    <th><?php te("Date");?></th>
+	<th><?php te("Order No");?></th>
+	<th><?php te("Description");?></th>
+	<th><?php te("Associated Files");?></th>
+</tr>
 </thead>
 <tbody>
 <?php 
@@ -97,7 +103,7 @@ while ($r=$sth->fetch(PDO::FETCH_ASSOC)) {
   $d=strlen($r['date'])?date($dateparam,$r['date']):"";
 
   echo "\n<tr id='trid{$r['id']}'>";
-  echo "<td><a class='editid' href='$scriptname?action=editinvoice&amp;id=".$r['id']."'>";
+  echo "<td class='editiditm icon edit'><center><a href='$scriptname?action=editinvoice&amp;id=".$r['id']."'><img src='../images/edit2.png'></a><a href='../php/delinvoice.php?id=".$r['id']."'><img src='../images/delete.png' border=0></a></center></td>";
   echo "{$r['id']}</a></td>\n";
   echo "<td>".$agents[$r['vendorid']]['title']."</td>\n";
   echo "<td>".$agents[$r['buyerid']]['title']."</td>\n";

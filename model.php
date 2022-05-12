@@ -130,14 +130,14 @@ function contractid2files($contractid,$dbh) {
 
 
 //returns number of connected items/racks with a locationid
-function countloclinks($locid,$dbh) {
-  $sql="SELECT count(id) count from items where locationid=$locid";
+function countloclinks($locationid,$dbh) {
+  $sql="SELECT count(id) count FROM items WHERE locationid='$locationid'";
   $sth=db_execute($dbh,$sql);
   $r=$sth->fetch(PDO::FETCH_ASSOC);
   $sth->closeCursor();
   $count+=$r['count'];
 
-  $sql="SELECT count(id) count from racks where locationid=$locid";
+  $sql="SELECT count(id) count from racks where locationid='$locationid'";
   $sth=db_execute($dbh,$sql);
   $r=$sth->fetch(PDO::FETCH_ASSOC);
   $sth->closeCursor();
@@ -362,7 +362,7 @@ global $dateparam,$scriptname,$action,$id,$uploaddirwww,$dbh;
      $flnk.="<a title='Remove association. If file is orphaned (nothing links to it), it gets deleted.' ".
 	   "href='javascript:delconfirm2(\"[$fid] $fname\",\"$scriptname?action=$action&amp;id=$id&amp;delfid=$fid\");'>".
 	 "<img src='images/delete.png'></a> ";
-   $flnk.= "<a target=_blank title='Edit File $fid' href='$scriptname?action=editfile&amp;id=$fid'><img  src='images/edit.png'></a>".
+   $flnk.= "<a target=_blank title='Edit File $fid' href='$scriptname?action=editfile&amp;id=$fid'><img  src='images/edit2.png'></a>".
 	 " <a target=_blank title='Download $fname' href='".$uploaddirwww.$fname."'><img src='images/down.png'></a>".
 	 "<br>Type:<b>$ftypestr</b>".
 	 "<br>Date:<b>$fdate</b>".

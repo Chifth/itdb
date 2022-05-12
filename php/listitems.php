@@ -1,170 +1,141 @@
-<script>
-var oTable;
+<SCRIPT LANGUAGE="JavaScript"> 
+$(function () {
+ //$('input#itemlistfilter').quicksearch('table#itemlisttbl tbody tr');
 
-$(document).ready(function() {
-	oTable = $('#itemlisttbl').dataTable( {
+  $('table#itemlisttbl').dataTable({
                 "sPaginationType": "full_numbers",
                 "bJQueryUI": true,
-                "iDisplayLength": 18,
-				"aLengthMenu": [[10,18, 25, 50, 100, -1], [10,18, 25, 50, 100, "All"]],
+                "iDisplayLength": 25,
+                "aLengthMenu": [[10,25, 50, 100, -1], [10,25, 50, 100, "All"]],
                 "bLengthChange": true,
                 "bFilter": true,
                 "bSort": true,
                 "bInfo": true,
-                //"sDom": '<"H"CTlpf>rt<"F"ip>',
                 "sDom": '<"H"Tlpf>rt<"F"ip>',
                 "oTableTools": {
                         "sSwfPath": "swf/copy_cvs_xls_pdf.swf"
-/*
+                }
 
-			"aButtons": [ {
-			  "sExtends": "ajax",
-			  "sButtonText": "Download CSV",
-			  "fnClick": function () {
-			    var iframe = document.createElement('iframe');
-			    iframe.style.height = "0px";
-			    iframe.style.width = "0px";
-			    iframe.src = "/php/datatables_listitems_ajax_csv.php";
-			    document.body.appendChild( iframe );
-			  }
-			  //"sAjaxUrl": "php/datatables_listitems_ajax_csv.php",
-			} ]
-*/
-                },
-		"aoColumnDefs": [ 
-			{ "sWidth": "70px", "aTargets": [ 0 ] },
-			{ "asSorting": [ "desc","asc" ], "aTargets": [ 0 ] },
-			{ "sType": "title-numeric", "aTargets": [ 7 ] }
-		],
-		//"oColVis": { "buttonText": "+/-", },
-		"bProcessing": true,
-		"bServerSide": true,
-		"sAjaxSource": "php/datatables_listitems_ajax.php",
-		//"sScrollY": "550px", "bScrollCollapse": true,
-		"sScrollX": "100%",
-		"sScrollXInner": "180%",
-		"bScrollCollapse": true,
-	} );
+  });
+});
 
-	jQuery.fn.dataTableExt.oSort['title-numeric-asc']  = function(a,b) {
-		var x = a.match(/title="*(-?[0-9]+)/)[1];
-		var y = b.match(/title="*(-?[0-9]+)/)[1];
-		x = parseFloat( x );
-		y = parseFloat( y );
-		return ((x < y) ? -1 : ((x > y) ?  1 : 0));
-	};
+</SCRIPT>
+<?php 
+if (!isset($initok)) {echo "do not run this script directly";exit;}
+/* Spiros Ioannou 2009 , sivann _at_ gmail.com */
 
-	jQuery.fn.dataTableExt.oSort['title-numeric-desc'] = function(a,b) {
-		var x = a.match(/title="*(-?[0-9]+)/)[1];
-		var y = b.match(/title="*(-?[0-9]+)/)[1];
-		x = parseFloat( x );
-		y = parseFloat( y );
-		return ((x < y) ?  1 : ((x > y) ? -1 : 0));
-	};
+//error_reporting(E_ALL);
+//ini_set('display_errors', '1');
 
-/*
-       	new FixedColumns( oTable, {
- 		"iLeftColumns": 1,
-		"iLeftWidth": 70
- 	} );
-*/
+//	Get item types
+$sql="SELECT * from itemtypes order by typedesc";
+$sth=db_execute($dbh,$sql);
+while ($r=$sth->fetch(PDO::FETCH_ASSOC)) $itypes[$r['id']]=$r;
+$sth->closeCursor();
+$sql="SELECT * from items order by id";
+$sth=db_execute($dbh,$sql);
+while ($r=$sth->fetch(PDO::FETCH_ASSOC)) $itemlist[$r['id']]=$r;
+$sth->closeCursor();
+$sql="SELECT * from users order by username";
+$sth=db_execute($dbh,$sql);
+while ($r=$sth->fetch(PDO::FETCH_ASSOC)) $userlist[$r['id']]=$r;
+$sth->closeCursor();
+$sql="SELECT * from locations order by name,floor";
+$sth=$dbh->query($sql);
+while ($r=$sth->fetch(PDO::FETCH_ASSOC)) $locations[$r['id']]=$r;
+$sth->closeCursor();
+$sql="SELECT * from locareas order by areaname";
+$sth=$dbh->query($sql);
+while ($r=$sth->fetch(PDO::FETCH_ASSOC)) $locareas[$r['id']]=$r;
+$sth->closeCursor();
+$sql="SELECT * from racks";
+$sth=$dbh->query($sql);
+while ($r=$sth->fetch(PDO::FETCH_ASSOC)) $racks[$r['id']]=$r;
+$sth->closeCursor();
+$sql="SELECT * from tags order by name";
+$sth=$dbh->query($sql);
+while ($r=$sth->fetch(PDO::FETCH_ASSOC)) $tags[$r['id']]=$r;
+$sth->closeCursor();
+$sql="SELECT * from vlans order by id";
+$sth=$dbh->query($sql);
+while ($r=$sth->fetch(PDO::FETCH_ASSOC)) $vlans[$r['id']]=$r;
+$sth->closeCursor();
+$sql="SELECT * from departments order by id";
+$sth=$dbh->query($sql);
+while ($r=$sth->fetch(PDO::FETCH_ASSOC)) $departments[$r['id']]=$r;
+$sth->closeCursor();
+$sql="SELECT id,title FROM agents";
+$sth=db_execute($dbh,$sql);
+while ($r=$sth->fetch(PDO::FETCH_ASSOC)) $agents[$r['id']]=$r;
+$sth->closeCursor();
+$sql="SELECT * FROM statustypes";
+$sth=$dbh->query($sql);
+$statustypes=$sth->fetchAll(PDO::FETCH_ASSOC);
+?>
 
-    $('input.column_filter').keyup(function () {
-		oTable.fnFilter( this.value, $(this).parents('tr').attr('data-column') ); 
-
-    } );
-
-	var thArray=[];
-	$('.colhead').each(function(i){
-		var txt=$(this).text();
-		if (txt)
-			thArray.push(txt);
-	})
-
-	$('#colfiltertbl td.col_filt_name').each(function( index ) {
-		var colidx=$(this).parents('tr').attr('data-column');
-		$(this).text(thArray[colidx])
-		//console.log($(this).parents('tr').attr('data-column'));
-	});
-
-    $('#togglefilter').click(function() {
-		$('#colfiltertbl').toggle();
-	});
-} );
-</script>
-
-<h1>
-<?php te("Items");?> <a title='Old Interface' style='font-size:0.5em' href="?action=listitems2">2</a>
-<a title='<?php te("Add new item");?>' href='<?php echo $scriptname;?>?action=edititem&amp;id=new'><img border=0 src='images/add.png'></a>
-<button style='margin-left:15px;font-weight:normal' class='filterbtn' id='togglefilter' style='font-weight:normal;font-size:1em'><?php te("Filter")?></button> 
+<h1><?php te("Items");?> <a title='<?php te("Add new item");?>' href='<?php echo $scriptname?>?action=edititem&amp;id=new'><img border=0 src='images/add.png' ></a>
 </h1>
 
+<table  class='display' width='100%' border=0 id='itemlisttbl'>
 
-
-<table id='colfiltertbl' style='display:none'>
-<tr>
-<td style='vertical-align:top'>
-	<table>
-		<?php
-		for ($i1=0;$i1<=20;$i1+=2) {
-		?>
-		<tr id="filter_col_<?php echo $i1?>" data-column="<?php echo $i1?>">
-			<td class='col_filt_name'>Name</td>
-			<td align="center"><input type="text" class="column_filter"></td>
-		</tr>
-		<?php
-		}
-		?>
-	</table>
-</td>
-
-<td style='vertical-align:top'>
-	<table>
-		<?php
-		for ($i2=1;$i2<=20;$i2+=2) {
-		?>
-		<tr id="filter_col_<?php echo $i2?>" data-column="<?php echo $i2?>">
-			<td class='col_filt_name'>Name</td>
-			<td align="center"><input type="text" class="column_filter"></td>
-		</tr>
-		<?php
-		}
-		?>
-	</table>
-</td>
-
-</tr>
-</table>
-
-
-<table id='itemlisttbl' class="display">
 <thead>
-	<tr>
-	<th class='colhead'><?php te("ID");?></th>
-	<th class='colhead'><?php te("Label");?></th>
-	<th class='colhead'><?php te("Item Type");?></th>
-	<th class='colhead'><?php te("Manufacturer");?></th>
-	<th class='colhead'><?php te("Model");?></th>
-	<th class='colhead'><?php te("DnsName");?></th>
-	<th class='colhead'><?php te("S/N");?></th>
-	<th class='colhead'><?php te("PurchaseDate");?></th>
-	<th class='colhead'><?php te("Warr. Rem. days");?></th>
-	<th class='colhead'><?php te("User");?></th>
-	<th class='colhead'><?php te("Status");?></th>
-	<th class='colhead'><?php te("Location");?></th>
-	<th class='colhead'><?php te("Area");?></th>
-	<th class='colhead'><?php te("Rack");?></th>
-	<th class='colhead'><?php te("PurchPrice");?></th>
-	<th class='colhead'><?php te("MACs");?></th>
-	<th class='colhead'><?php te("IPv4");?></th>
-	<th class='colhead'><?php te("IPv6");?></th>
-	<th class='colhead'><?php te("RemAdmIP");?></th>
-	<th class='colhead'><?php te("Tags");?></th>
-	<th class='colhead'><?php te("Software");?></th>
-	</tr>
+<tr>
+  <th style='width:70px'><?php te("Edit/Delete");?></th>
+  <th><?php te("Item type");?></th>
+  <th><?php te("Building [Floor]");?></th>
+  <th><?php te("Area/Room");?></th>
+  <th><?php te("Manufacturer");?></th>
+  <th style='width:70px'><?php te("Model");?></th>
+  <th><?php te("DNS Name");?></th>
+  <th><?php te("S/N");?></th>
+  <th><?php te("Asset #");?></th>
+  <th><?php te("Status");?></th>
+  <th><?php te("MAC");?></th>
+  <th><?php te("IPv4");?></th>
+  </tr>
 </thead>
 <tbody>
-	<tr> <td colspan="21" class="dataTables_empty"><?php te("Loading data from server");?></td> </tr>
+<?php 
+$t=time();
+$sql="SELECT items.*,agents.title AS agtitle, (purchasedate+warrantymonths*30*24*60*60-$t)/(60*60*24) AS remdays FROM items, agents WHERE agents.id=items.manufacturerid $where ORDER BY function ASC";
+$sth=db_execute($dbh,$sql);
+
+  $x=attrofstatus((int)$r['status'],$dbh);
+  $attr=$x[0];
+  $statustxt=$x[1];
+
+// display results
+$currow=0;
+while ($r=$sth->fetch(PDO::FETCH_ASSOC)) {
+$currow++;
+
+  $sn="";
+  if (strlen($r['sn'])) $sn.=$r['sn'];
+  if (strlen($r['sn2'])) {if (strlen($sn)) $sn.=", ";} $sn.=$r['sn2'];
+  if (strlen($r['sn3'])) {if (strlen($sn)) $sn.=", ";} $sn.=$r['sn3'];
+
+  //username
+  $user=isset($userlist[$r['userid']])?$userlist[$r['userid']]['username']:"";
+  if ($r['ports']) $ports=$r['ports'];
+
+  echo "\n<tr id='trid{$r['id']}'>";
+  echo "<td class='editiditm icon edit'><center><a href='$scriptname?action=edititem&amp;id=".$r['id']."'><img src='../images/edit2.png'></a><a href='../php/delitem.php?id=".$r['id']."'><img src='../images/delete.png' border=0></a></center></td>";
+  echo "<td>".$itypes[$r['itemtypeid']]['typedesc']."</td>";
+  echo "<td>".$locations[$r['locationid']]['name']."</td>\n";
+  echo "<td><center>".$locareas[$r['locareaid']]['areaname']."</center></td>";
+  echo "<td>".$r['agtitle']."&nbsp;</td>";
+  echo "<td width='auto'><center>".$r['model']."</center></td>";
+  echo "<td><center>".$r['dnsname']."</center></td>";
+  echo "<td><center>$sn</center></td>";
+  echo "<td><center>".$r['asset']."</center></td>";
+  echo "<td><center>$statustxt</center></td>";
+  echo "<td>".$r['macs']."</td>";
+  echo "<td>".$r['ipv4']."</td>";
+}?>
+
 </tbody>
 </table>
 
+</form>
+</body>
+</html>

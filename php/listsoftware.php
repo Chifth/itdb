@@ -47,7 +47,7 @@ $sth=db_execute($dbh,$sql);
 
 <thead>
      <tr>
-     <th nowrap><?php te("ID");?></th><th><?php te("Manufacturer");?></th><th><?php te("Title");?></th><th><?php te("Version");?></th><th><?php te("Purchase Date");?></th>
+     <th nowrap><?php te("Edit/Delete");?></th><th><?php te("Manufacturer");?></th><th><?php te("Title");?></th><th><?php te("Version");?></th><th><?php te("Purchase Date");?></th>
      <th title='<?php te("maintenance end date");?>'><?php te("Maint. End");?></th>
      <th><?php te("License Info");?></th><th><?php te("Other Info");?></th>
      <th><?php te("Tags");?></th>
@@ -120,8 +120,7 @@ while ($r=$sth->fetch(PDO::FETCH_ASSOC)) {
 ?>
 
   <tr>
-  <td><div class='editid'><a title='<?php te("Edit Software");?>' href='<?php echo $scriptname?>?action=editsoftware&amp;id=<?php echo $r['id']?>'><?php echo $id?></a></div>
-  </td>
+  echo "<td><div class='editiditm icon edit'><center><a href='$scriptname?action=editsoftware&amp;id=".$r['id']."'><img src='../images/edit2.png'></a><a href='../php/delsoftware.php?id=".$r['id']."'><img src='../images/delete.png' border=0></a></center></div></td>";
 
 <?php 
 
