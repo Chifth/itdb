@@ -226,7 +226,8 @@ global $uploaddir;
 function countitemtags($tagid) {
   global $dbh;
 
-  $sql="SELECT count(itemid) count from tag2item where tagid=$tagid";
+  /* $sql="SELECT count(itemid) count from tag2item where tagid=$tagid"; */
+  $sql="SELECT count(itemid) count from tag2item,items where tagid=$tagid AND items.id=tag2item.itemid AND items.itemtypeid !=1 AND items.itemtypeid !=2";
   $sth=db_execute($dbh,$sql);
   $r=$sth->fetch(PDO::FETCH_ASSOC);
   $sth->closeCursor();
