@@ -156,7 +156,7 @@ if ($nt) {
 	}
 
 	//find which english words are missing from current translation file
-	foreach ($eng  as $engstr){
+	foreach ($eng as $engstr){
 		if (!in_array($engstr,$tt1)) {
 			$nt++;
 			echo "<tr><td style='border:1px solid #ee0000'>".$engstr."</td>".
